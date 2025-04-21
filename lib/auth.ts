@@ -1,6 +1,7 @@
 import { NextApiRequest } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { jwtVerify } from 'jose';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -35,6 +36,16 @@ export async function verifyAuth(req: NextApiRequest) {
   }
 }
 
-export async function createAuthToken(payload: any) {
-  // Implementation will be added when needed
-} 
+export async function createAuthToken(user: { id: number; email: string; role: string }): Promise<string> {
+  const payload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+    expiresIn: '1h',
+  });
+
+  return token;
+}

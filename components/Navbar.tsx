@@ -64,7 +64,7 @@ export default function Navbar() {
                   <Link href="/books/add" className="hover:text-blue-200">
                     Add Book
                   </Link>
-                  <Link href="/books/manage" className="hover:text-blue-200">
+                  <Link href="/manage/books" className="hover:text-blue-200">
                     Manage Books
                   </Link>
                 </>
@@ -72,7 +72,7 @@ export default function Navbar() {
 
               {/* Admin-only links */}
               {user.role === 'ADMIN' && (
-                <Link href="/admin/users" className="hover:text-blue-200">
+                <Link href="/users" className="hover:text-blue-200">
                   Manage Users
                 </Link>
               )}
@@ -108,4 +108,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-} 
+}

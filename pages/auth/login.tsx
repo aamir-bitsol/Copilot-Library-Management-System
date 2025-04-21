@@ -1,6 +1,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { GetServerSideProps } from 'next';
+import { verifyAuth } from '../../lib/auth';
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const user = await verifyAuth(req);
+  
+  if (user) {
+    return {
+      redirect: {
+        destination: '/home',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
 
 const Login = () => {
   const [formData, setFormData] = useState({

@@ -31,21 +31,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json(users);
 
       case 'PUT':
-        const { userId, role } = req.body;
-
-        if (!userId || !role) {
-          return res.status(400).json({ message: 'User ID and role are required' });
-        }
+        const { id, name, email, role } = req.body;
 
         // Prevent self-role change
-        if (userId === user.id) {
+        if (role === 'ADMIN') {
           return res.status(400).json({ message: 'Cannot change your own role' });
         }
 
-        // Update user role
+        // Update user data
         const updatedUser = await prisma.user.update({
-          where: { id: userId },
-          data: { role },
+          where: { id },
+          data: { name, email, role },
           select: {
             id: true,
             name: true,
@@ -66,4 +62,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } finally {
     await prisma.$disconnect();
   }
-} 
+}

@@ -7,40 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  LIBRARIAN
-  ADMIN
-}
-
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  borrows   Borrow[]
-  addedBooks Book[]  @relation("BookAddedBy")
-  books     Book[]   @relation("UserBooks")
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  role       Role     @default(USER)
+  addedBooks Book[]   @relation("BookAddedBy")
+  borrows    Borrow[]
+  books      Book[]   @relation("UserBooks")
 }
 
 model Book {
   id          Int      @id @default(autoincrement())
   title       String
   author      String
-  isbn        String   @unique
   genre       String
-  quantity    Int      @default(1)
-  available   Int      @default(1)
   publishedAt DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  addedBy     User     @relation("BookAddedBy", fields: [addedById], references: [id])
   addedById   Int
-  users       User[]   @relation("UserBooks")
+  available   Int      @default(1)
+  isbn        String   @unique
+  quantity    Int      @default(1)
+  addedBy     User     @relation("BookAddedBy", fields: [addedById], references: [id])
   borrows     Borrow[]
+  users       User[]   @relation("UserBooks")
 }
 
 model Borrow {
@@ -48,10 +42,15 @@ model Borrow {
   userId     Int
   bookId     Int
   borrowedAt DateTime  @default(now())
-  dueDate    DateTime
   returnedAt DateTime?
-  status     String    @default("BORROWED") // BORROWED, RETURNED, OVERDUE
-
-  user       User      @relation(fields: [userId], references: [id])
+  dueDate    DateTime
+  status     String    @default("BORROWED")
   book       Book      @relation(fields: [bookId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  LIBRARIAN
+  ADMIN
 }

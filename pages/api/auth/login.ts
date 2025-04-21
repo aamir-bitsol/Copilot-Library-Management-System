@@ -37,7 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      {
+        userId: user.id,
+        email: user.email,
+        role: user.role, // Include role in the token payload
+      },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -58,4 +62,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } finally {
     await prisma.$disconnect();
   }
-} 
+}

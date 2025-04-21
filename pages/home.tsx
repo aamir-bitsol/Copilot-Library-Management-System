@@ -69,7 +69,7 @@ export default function Home() {
               <div className="bg-purple-50 p-6 rounded-lg">
                 <h2 className="text-xl font-semibold mb-3">Manage Library</h2>
                 <p className="text-gray-600 mb-4">Add new books and manage the library collection.</p>
-                <a href="/books/manage" className="text-purple-600 hover:text-purple-800 font-medium">
+                <a href="/manage/books" className="text-purple-600 hover:text-purple-800 font-medium">
                   Manage Books →
                 </a>
               </div>

@@ -1,14 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-  // Prevent multiple instances of PrismaClient in development
-  var prisma: PrismaClient | undefined;
+// Ensure a single PrismaClient instance is used in development to avoid hot-reloading issues
+const prisma = globalThis.prisma || new PrismaClient();
+if (process.env.NODE_ENV === 'development') globalThis.prisma = prisma;
+
+if (!prisma) {
+  throw new Error('Prisma client is not initialized. Check your database connection and Prisma setup.');
 }
 
-const prisma = global.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV === 'development') {
-  global.prisma = prisma;
-}
-
-export default prisma;
+export const db = prisma;

@@ -10,7 +10,9 @@ const roleBasedPaths = {
   '/admin': ['ADMIN'],
   '/books/add': ['ADMIN', 'LIBRARIAN'],
   '/books/edit': ['ADMIN', 'LIBRARIAN'],
-  '/books/manage': ['ADMIN', 'LIBRARIAN'],
+  '/manage/books': ['ADMIN', 'LIBRARIAN'],
+  '/manage/users': ['ADMIN'],
+  '/my-books': ['USER', 'LIBRARIAN', 'ADMIN'],
 };
 
 export async function middleware(request: NextRequest) {
@@ -36,20 +38,23 @@ export async function middleware(request: NextRequest) {
       new TextEncoder().encode(process.env.JWT_SECRET)
     );
 
+
     // Get user role from token
     const userRole = verified.payload.role as string;
 
     // Check role-based access
     for (const [path, roles] of Object.entries(roleBasedPaths)) {
-      if (pathname.startsWith(path) && !roles.includes(userRole)) {
-        // Redirect to home if user doesn't have required role
-        return NextResponse.redirect(new URL('/home', request.url));
+      if (pathname.startsWith(path)) {
+        if (!roles.includes(userRole)) {
+          console.log('Middleware: Access denied, redirecting to home.');
+          return NextResponse.redirect(new URL('/home', request.url));
+        }
       }
     }
 
     return NextResponse.next();
   } catch (error) {
-    // If token is invalid, redirect to login
+    console.error('Middleware: Token verification failed, redirecting to login.', error);
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 }
